@@ -1,0 +1,5 @@
+{
+    "topFarmerUrl": "http://118.31.61.119:8080/topfarmers",
+    "joinUrl": "http://118.31.61.119:8080/farmers",
+    "fetchInterval": 10000
+}
