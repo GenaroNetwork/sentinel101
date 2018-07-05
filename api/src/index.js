@@ -12,9 +12,9 @@ const server = Hapi.server({
 // Add the route
 server.route({
   method: 'GET',
-  path: '/hello',
+  path: '/top-farmer',
   handler: function (request, h) {
-    return 'hello world'
+    return topFarmer.getTopN()
   }
 })
 

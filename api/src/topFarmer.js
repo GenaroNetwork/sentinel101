@@ -8,12 +8,12 @@ function sleep (ms) {
 let isSyncing = false
 let gTopN = []
 
-async function getTopN () {
+function getTopN () {
   return gTopN
 }
 
 async function refresh () {
-console.log(Date.now() + ' refresh top N')
+  console.log(Date.now() + ' refresh top N')
   const topN = (await axios.get(config.topFarmerUrl)).data
   if (Array.isArray(topN)) {
     gTopN = topN
@@ -29,7 +29,11 @@ async function syncOn () {
   }
   isSyncing = true
   do {
-    await refresh()
+    try {
+      await refresh()
+    } catch (error) {
+      console.log('refresh error' + error)
+    }
     await sleep(config.fetchInterval)
   } while (true)
 }
