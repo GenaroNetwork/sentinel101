@@ -2,6 +2,8 @@
 
 const Hapi = require('hapi')
 const topFarmer = require('./topFarmer')
+const farmerStake = require('./farmerStake')
+const Boom = require('boom')
 
 // Create a server with a host and port
 const server = Hapi.server({
@@ -9,12 +11,66 @@ const server = Hapi.server({
   port: 8000
 })
 
+const config = {
+  cors: {
+    origin: ['*'],
+    additionalHeaders: ['cache-control', 'x-requested-with']
+  }
+}
+
 // Add the route
 server.route({
   method: 'GET',
   path: '/top-farmer',
+  config,
   handler: function (request, h) {
     return topFarmer.getTopN()
+  }
+})
+
+server.route({
+  method: 'POST',
+  path: '/register-farmer',
+  config,
+  handler: async function (request, h) {
+    var pp = request.payload
+    if (pp && pp.address && pp.nickName) {
+      try {
+        await topFarmer.register(pp.address, pp.nickName)
+        return h.response().code(201)
+      } catch (error) {
+        throw Boom.notFound(error.message)
+      }
+    } else {
+      throw Boom.badData('your data is bad and you should feel bad')
+    }
+  }
+})
+
+server.route({
+  method: 'GET',
+  path: '/total-stake',
+  config,
+  handler: function (request, h) {
+    return farmerStake.getTotalStake()
+  }
+})
+
+server.route({
+  method: 'GET',
+  path: '/stake/{address}',
+  config,
+  handler: async function (request, h) {
+    return await farmerStake.getFarmerStake(request.params.address)
+  }
+})
+
+server.route({
+  method: 'GET',
+  path: '/farmer-outline',
+  config,
+  handler: async function (request, h) {
+    return await topFarmer.getFarmerOutline()
   }
 })
 
@@ -22,6 +78,7 @@ server.route({
 async function start () {
   try {
     topFarmer.syncOn()
+    farmerStake.syncTotalStakeOn()
     await server.start()
   } catch (err) {
     console.log(err)

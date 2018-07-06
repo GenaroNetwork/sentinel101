@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
-    "genaro-web3": "^0.5.1",
+    "bn.js": "^4.11.8",
+    "boom": "^7.2.0",
+    "genaro-web3": "^0.5.2",
     "hapi": "^17.5.2"
   },
   "devDependencies": {

@@ -21,31 +21,54 @@
 </template>
 
 <script>
+import {getTopN, getFarmerStake} from '../api/topFarmer'
+import * as humanSize from 'human-size'
 // const pageSize = 15
 export default {
   data() {
     return {
       page:0,
-      tableData: [{
-        order: '1',
-        nickName: '李三',
-        address: '0xecc2784804dc1db60bce0a9f941c1f1fa76a5e3c',
-        stake: 5000,
-        spaceShared: 9899,
-        heft: 8000
-      }]
+      tableData: []
     }
   },
   methods: {
       formatGNX(row) {
+        if(row.stake) {
           return (row.stake) + ' GNX'
+        } else {
+          return '--'
+        }
       },
       formatSpace(row) {
-          return (row.spaceShared) + ' GB'
+        if(row.data_size) {
+          return humanSize(row.data_size, 2)
+        } else {
+          return 0
+        }
       },
       formatAddr(row) {
         return row.address
+      },
+      async fetchTopN() {
+        let this2 = this
+        this2.tableData = await getTopN()
+      },
+      async refreshStake() {
+        const this2 = this
+        this2.tableData.forEach((row) => {
+          getFarmerStake(row.address).then(s => {
+            this2.$set(row, 'stake', s)
+          })
+        })
+        return 
       }
+  },
+  async created() {
+    const this2 = this
+    await this.fetchTopN()
+    setInterval(()=>{
+      this2.refreshStake()
+    }, 5000)
   }
 }
 </script>

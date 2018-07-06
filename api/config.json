@@ -1,5 +1,6 @@
 {
-    "topFarmerUrl": "http://118.31.61.119:8080/topfarmers",
-    "joinUrl": "http://118.31.61.119:8080/farmers",
+    "topFarmerUrl": "http://118.31.61.119:8080/top-farmer",
+    "registerUrl": "http://118.31.61.119:8080/register-farmer",
+    "outlineUrl": "http://118.31.61.119:8080/farmer-outline",
     "fetchInterval": 10000
 }

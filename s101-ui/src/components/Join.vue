@@ -13,6 +13,8 @@
 </template>
 
 <script>
+
+import {register} from '../api/topFarmer'
   export default {
     data() {
       return {
@@ -23,15 +25,17 @@
       }
     },
     methods: {
-      onSubmit() {
-        console.log(this.formInline.user)
-        console.log(this.formInline.nickname)
+      async onSubmit() {
+        try {
+          await register(this.formInline.user, this.formInline.nickname)
+        } catch (error) {
+          alert(error.response.data.message)
+        }
       }
     }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 * {
   text-align: center;
