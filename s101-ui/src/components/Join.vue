@@ -27,12 +27,21 @@ export default {
     async onSubmit() {
       try {
         await register(this.formInline.user, this.formInline.nickname);
+        this.$message({
+          message: '成功加入排名',
+          type: 'success'
+        });
+        this.formInline.user = '';
+        this.formInline.nickname = '';
       } catch (error) {
+        let message = '';
         if (error.response && error.response.data) {
-          alert(error.response.data.message);
+          message = error.response.data.message;
         } else {
-          alert(error);
+          message = error.message;
         }
+        debugger;
+        this.$message.error({message});
       }
     }
   }
