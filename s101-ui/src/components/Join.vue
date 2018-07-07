@@ -40,7 +40,6 @@ export default {
         } else {
           message = error.message;
         }
-        debugger;
         this.$message.error({message});
       }
     }

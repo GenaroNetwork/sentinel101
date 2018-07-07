@@ -8,7 +8,7 @@
     <div class="spaceShared">空间使用量</div>
     <div class="heft">Sharer 分数</div>
   </div>
-  <div class="table-row flex-wrap" v-for="row in tableData" :key="row.address">
+  <div class="table-row flex-wrap" v-for="row in showData" :key="row.address">
     <div class="order">{{row.order}}</div>
     <div class="nickName">{{row.nickName}}</div>
     <div class="address">{{row.address}}</div>
@@ -16,18 +16,29 @@
     <div class="spaceShared">{{row.data_size | formatSize}}</div>
     <div class="heft">{{row.heft}}</div>
   </div>
+  <div class="block">
+  <el-pagination
+    background
+    :page-size="pageSize"
+    layout="prev, pager, next"
+    :total="tableData.length"
+    @current-change="handleCurrentChange">
+  </el-pagination>
+</div>
 </div>
 </template>
 
 <script>
-import {getTopN, getFarmerStake} from '../api/topFarmer'
-import * as humanSize from 'human-size'
-// const pageSize = 15
+import {getTopN, getFarmerStake} from '../api/topFarmer';
+import * as humanSize from 'human-size';
+
 export default {
   data() {
     return {
       page:0,
-      tableData: []
+      tableData: [],
+      showData: [],
+      pageSize: 10
     }
   },
   methods: {
@@ -60,12 +71,16 @@ export default {
           })
         })
         return 
+      },
+      handleCurrentChange(currentPage) {
+        this.showData = this.tableData.slice((currentPage - 1) * this.pageSize, currentPage * this.pageSize);
       }
   },
   async created() {
     const this2 = this
     await this2.fetchTopN()
     this2.refreshStake()
+    this2.handleCurrentChange(1)
     setInterval(async ()=>{
       await this2.fetchTopN()
       this2.refreshStake()
