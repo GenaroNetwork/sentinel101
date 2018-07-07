@@ -89,7 +89,7 @@ export default {
         })
         this2.tableData = newData
       },
-      async refreshStake() {
+      refreshStake() {
         const this2 = this
         this2.tableData.forEach((row) => {
           getFarmerStake(row.address).then(s => {
