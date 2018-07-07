@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="stat">
-      <span class="value">{{totalStake/100000000 | formatNumber}}<span class="unit">GNX</span></span>
+      <span class="value">{{totalStake | formatNumber}}<span class="unit">GNX</span></span>
       <span class="desc">STAKE 总量</span>
     </div>
     <div class="stat">
