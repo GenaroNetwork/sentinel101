@@ -8,8 +8,15 @@ const farmerStakeUrl = "http://localhost:8000/stake/"
 const farmerOutline = "http://localhost:8000/farmer-outline"
 
 
-async function getTopN() {
-    return (await axios.get(fetchUrl)).data
+async function getTopN(address) {
+    let url = fetchUrl;
+    if (address) {
+        if (!isAddress(address)) {
+            throw new Error('invalid address')
+        }
+        url += '?address=' + address;
+    }
+    return (await axios.get(url)).data;
 }
 
 async function register (address, nickName) {

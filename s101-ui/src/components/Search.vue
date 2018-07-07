@@ -14,7 +14,7 @@
 
 <script>
 
-import {register} from '../api/topFarmer'
+import {getTopN} from '../api/topFarmer'
   export default {
     data() {
       return {
@@ -26,6 +26,15 @@ import {register} from '../api/topFarmer'
     },
     methods: {
       onSubmit() {
+        try {
+        await getTopN(this.formInline.user);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          alert(error.response.data.message);
+        } else {
+          alert(error);
+        }
+      }
       }
     }
   }
