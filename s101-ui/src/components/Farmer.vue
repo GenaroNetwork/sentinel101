@@ -1,22 +1,21 @@
 <template>
 <div class="tb-wrap">
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column prop="order" label="全球排名">
-    </el-table-column>
-    <el-table-column prop="nickName" label="昵称">
-    </el-table-column>
-    <el-table-column prop="address" label="地址" min-width="150">
-      <template slot-scope="scope">
-        <span class="addr" >{{ (scope.row.address) }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column prop="stake" :formatter="formatGNX" label="GNX Stake 量">
-    </el-table-column>
-    <el-table-column prop="spaceShared" :formatter="formatSpace" label="空间使用量">
-    </el-table-column>
-    <el-table-column prop="heft" label="Sharer 分数">
-    </el-table-column>
-  </el-table>
+  <div class="table-header flex-wrap">
+    <div class="order">全球排名</div>
+    <div class="nickName">昵称</div>
+    <div class="address">地址</div>
+    <div class="stake">GNX Stake 量</div>
+    <div class="spaceShared">空间使用量</div>
+    <div class="heft">Sharer 分数</div>
+  </div>
+  <div class="table-row flex-wrap" v-for="row in tableData" :key="row.address">
+    <div class="order">{{row.order}}</div>
+    <div class="nickName">{{row.nickName}}</div>
+    <div class="address">{{row.address}}</div>
+    <div class="stake">{{row.stake | formatNumber}} GNX</div>
+    <div class="spaceShared">{{row.data_size | formatSize}}</div>
+    <div class="heft">{{row.heft}}</div>
+  </div>
 </div>
 </template>
 
@@ -65,8 +64,10 @@ export default {
   },
   async created() {
     const this2 = this
-    await this.fetchTopN()
-    setInterval(()=>{
+    await this2.fetchTopN()
+    this2.refreshStake()
+    setInterval(async ()=>{
+      await this2.fetchTopN()
       this2.refreshStake()
     }, 5000)
   }
@@ -84,4 +85,38 @@ export default {
   white-space: nowrap;
   overflow: hidden;
 }
+.flex-wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+.order {
+  width: 80px;
+  flex-shrink: 0;
+}
+.nickName {
+  width: 80px;
+  flex-shrink: 0;
+}
+.address {
+  width: 180px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stake {
+  width: 80px;
+  flex-shrink: 0;
+  flex-grow: 1;
+}
+.spaceShared {
+  width: 120px;
+  flex-shrink: 0;
+}
+.heft {
+  width: 120px;
+  flex-shrink: 0;
+}
+
 </style>

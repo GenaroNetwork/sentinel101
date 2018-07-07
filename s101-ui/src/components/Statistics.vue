@@ -26,11 +26,17 @@ export default {
       totalDataSize: 0,
     }
   },
+  methods: {
+    async refreshData() {
+      this.totalStake = await getTotalStake()
+      const ol = await getFarmerOutline()
+      this.totalHeft = ol.totalHeft
+      this.totalDataSize = ol.totalDataSize
+    }
+  },
   async created() {
-    this.totalStake = await getTotalStake()
-    const ol = await getFarmerOutline()
-    this.totalHeft = ol.totalHeft
-    this.totalDataSize = ol.totalDataSize
+    await this.refreshData()
+    setInterval(this.refreshData, 3000)
   }
 }
 </script>
