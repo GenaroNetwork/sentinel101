@@ -7,14 +7,25 @@
     <div class="stake">GNX Stake 量</div>
     <div class="spaceShared">空间使用量</div>
     <div class="heft">Sentinel</div>
+    <div class="info"></div>
   </div>
   <div class="table-row flex-wrap" v-for="row in showData" :key="row.address">
-    <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
-    <div class="nickName">{{row.nickName}}</div>
-    <div class="address">{{row.address}}</div>
-    <div class="stake">{{row.stake | formatNumber}} GNX</div>
-    <div class="spaceShared">{{row.data_size | formatSize}}</div>
-    <div class="heft">{{row.heft}}</div>
+    <div class="row-up flex-wrap">
+      <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
+      <div class="nickName">{{row.nickName}}</div>
+      <div class="address">{{row.address}}</div>
+      <div class="stake">{{row.stake | formatNumber}} GNX</div>
+      <div class="spaceShared">{{row.data_size | formatSize}}</div>
+      <div class="heft">{{row.heft}}</div>
+      <div class="info" @click.stop.prevent="toggleShowInfo(row)">
+        <i v-if="!row.showExtra" class="el-icon-arrow-down"></i>
+        <i v-if="row.showExtra" class="el-icon-arrow-up"></i>
+      </div>
+    </div>
+    <div class="row-down" v-if="row.showExtra">
+      <div class="extra-row"><span class="leftc">GNX Stake 量</span> <span class="rightc">{{row.stake | formatNumber}}</span></div>
+      <div class="extra-row"><span class="leftc">空间使用量</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
+    </div>
   </div>
   <div class="block">
   <el-pagination
@@ -59,9 +70,24 @@ export default {
       formatAddr(row) {
         return row.address
       },
+      toggleShowInfo(row) {
+        if(row.showExtra) {
+            this.$set(row, 'showExtra', false)
+        } else {
+            this.$set(row, 'showExtra', true)
+        }
+      },
       async fetchTopN() {
         let this2 = this
-        this2.tableData = await getTopN()
+        // remember opend
+        let openAddress = this2.tableData.filter(row => row.showExtra === true).map(row => row.address)
+        let newData = await getTopN()
+        newData.forEach(row => {
+          if(openAddress.includes(row.address)) {
+            row.showExtra = true
+          }
+        })
+        this2.tableData = newData
       },
       async refreshStake() {
         const this2 = this
@@ -106,6 +132,7 @@ export default {
   margin: 10px 0;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
   border-radius: 6px;
+  flex-direction: column;
 }
 .addr {
   text-overflow: ellipsis;
@@ -154,6 +181,15 @@ export default {
 .heft {
   width: 120px;
   flex-shrink: 0;
+  text-align: right;
+}
+.info {
+  display: none;
+}
+
+
+.row-up {
+  width: 100%;
 }
 @media only screen and (max-width: 1024px) {
   .stake, .spaceShared{
@@ -161,10 +197,46 @@ export default {
   }
 
   .tb-wrap {
-    width: 100%
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .order {
+  width: 60px;
   }
   .address {
   flex-shrink: 1;
   }
+.nickName {
+  width: 80px;
+  flex-shrink: 0;
+}
+.heft {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.info {
+  width: 30px;
+  flex-shrink: 0;
+  display:unset;
+  color: rgba(0,0,0,0.4);
+  text-align: center;
+}
+.row-down {
+  padding-top: 15px;
+  width: 100%;
+}
+.row-down .leftc {
+  padding-left: 24px;
+}
+.row-down .rightc {
+  padding-right: 30px;
+}
+.extra-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 }
 </style>
