@@ -1,15 +1,15 @@
 <template>
 <div class="tb-wrap">
   <div class="table-header flex-wrap">
-    <div class="order">全球排名</div>
+    <div class="order">排名</div>
     <div class="nickName">昵称</div>
     <div class="address">地址</div>
     <div class="stake">GNX Stake 量</div>
     <div class="spaceShared">空间使用量</div>
-    <div class="heft">Sharer 分数</div>
+    <div class="heft">Sentinel</div>
   </div>
   <div class="table-row flex-wrap" v-for="row in tableData" :key="row.address">
-    <div class="order">{{row.order}}</div>
+    <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
     <div class="nickName">{{row.nickName}}</div>
     <div class="address">{{row.address}}</div>
     <div class="stake">{{row.stake | formatNumber}} GNX</div>
@@ -78,7 +78,19 @@ export default {
 <style scoped>
 .tb-wrap {
   margin: 0 auto;
-  width: 80%;
+  width: 1024px;
+  padding: 30px 0;
+  font-size: 18px;
+}
+.table-header {
+  font-weight: bold;
+  padding: 10px 0;
+}
+.table-row {
+  padding: 20px 0;
+  margin: 10px 0;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  border-radius: 6px;
 }
 .addr {
   text-overflow: ellipsis;
@@ -92,11 +104,16 @@ export default {
   align-items: center;
 }
 .order {
-  width: 80px;
+  width: 120px;
   flex-shrink: 0;
+  text-align: center;
+}
+.top3 {
+  color: #1e9ffa;
+  font-size: 24px;
 }
 .nickName {
-  width: 80px;
+  width: 120px;
   flex-shrink: 0;
 }
 .address {
@@ -104,19 +121,35 @@ export default {
   flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-grow: 1;
+  padding-right: 15px;
 }
 .stake {
-  width: 80px;
+  width: 150px;
   flex-shrink: 0;
-  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 15px;
 }
 .spaceShared {
-  width: 120px;
+  width: 150px;
   flex-shrink: 0;
 }
 .heft {
   width: 120px;
   flex-shrink: 0;
 }
+@media only screen and (max-width: 1024px) {
+  .stake, .spaceShared{
+    display: none;
+  }
 
+  .tb-wrap {
+    width: 100%
+  }
+  .address {
+  flex-shrink: 1;
+  }
+}
 </style>

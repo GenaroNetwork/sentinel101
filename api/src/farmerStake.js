@@ -6,7 +6,7 @@ function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const web3 = new Web3(new Web3.providers.WebsocketProvider("http://118.31.61.119:8547"))
+const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://118.31.61.119:8547"))
 
 let totalStake = new BN(0)
 let isSyncing = false
