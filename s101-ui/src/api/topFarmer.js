@@ -1,11 +1,11 @@
 import * as axios from 'axios'
 import { isAddress } from 'web3-utils'
 
-const fetchUrl = "http://localhost:8000/top-farmer"
-const registerUrl = "http://localhost:8000/register-farmer"
-const totalStakeUrl = "http://localhost:8000/total-stake"
-const farmerStakeUrl = "http://localhost:8000/stake/"
-const farmerOutline = "http://localhost:8000/farmer-outline"
+const fetchUrl = "http://192.168.50.192:8000/top-farmer"
+const registerUrl = "http://192.168.50.192:8000/register-farmer"
+const totalStakeUrl = "http://192.168.50.192:8000/total-stake"
+const farmerStakeUrl = "http://192.168.50.192:8000/stake/"
+const farmerOutline = "http://192.168.50.192:8000/farmer-outline"
 
 
 async function getTopN(address) {
