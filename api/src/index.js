@@ -25,7 +25,8 @@ server.route({
   path: '/top-farmer',
   config,
   handler: function (request, h) {
-    return topFarmer.getTopN()
+    var address = request.query.address
+    return topFarmer.getTopN(address)
   }
 })
 

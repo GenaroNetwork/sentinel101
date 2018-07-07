@@ -8,7 +8,10 @@ function sleep (ms) {
 let isSyncing = false
 let gTopN = []
 
-function getTopN () {
+function getTopN (address) {
+  if(address) {
+    return gTopN.filter(g => g.address == address);
+  }
   return gTopN
 }
 

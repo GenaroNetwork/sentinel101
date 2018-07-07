@@ -27,17 +27,7 @@ import {getTopN} from '../api/topFarmer'
     methods: {
       onSubmit() {
         try {
-          let allData = await getTopN();
           let filterData = await getTopN(this.formInline.user);
-          filterData.forEach(fd => {
-            for(let i = 0, length = allData.length; i < length; i++){
-              if(allData[i].nickName == fb.nickName) {
-                fd.order = allData[i].order;
-                return;
-              }
-            }
-            fd.order = -1;
-          });
           return filterData;
       } catch (error) {
         if (error.response && error.response.data) {
