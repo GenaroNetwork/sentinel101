@@ -3,6 +3,7 @@
     <h1>Genaro Sharer 排行</h1>
     <Join />
     <Statistics />
+    <Search />
     <Farmer />
   </div>
 </template>
@@ -11,13 +12,15 @@
 import Join from './components/Join.vue'
 import Statistics from './components/Statistics.vue'
 import Farmer from './components/Farmer.vue'
+import Search from './components/Search.vue'
 
 export default {
   name: 'app',
   components: {
     Join,
     Statistics,
-    Farmer
+    Farmer,
+    Search
   }
 }
 </script>

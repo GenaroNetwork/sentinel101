@@ -1,37 +1,33 @@
 <template>
-  <el-form :inline="true" :model="formInline" class="demo-form-inline">
+  <el-form :inline="true" :model="formInline" class="wrapper">
     <el-form-item label="">
-      <el-input v-model="formInline.user" placeholder="请输入钱包地址"></el-input>
-    </el-form-item>
-    <el-form-item label="">
-      <el-input v-model="formInline.nickname" placeholder="昵称"></el-input>
+      <el-input clearable v-model="formInline.user" placeholder="请输入钱包地址"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">加入 Genaro Sharer 全球排名</el-button>
+      <el-button type="primary" @click="onSubmit">搜索</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
 
-import {getTopN} from '../api/topFarmer'
+  import {getTopN} from '../api/topFarmer'
   export default {
     data() {
       return {
         formInline: {
-          user: '',
-          nickname: ''
+          user: ''
         }
       }
     },
     methods: {
-      onSubmit() {
+      async onSubmit() {
         try {
           let allData = await getTopN();
           let filterData = await getTopN(this.formInline.user);
           filterData.forEach(fd => {
             for(let i = 0, length = allData.length; i < length; i++){
-              if(allData[i].nickName == fb.nickName) {
+              if(allData[i].nickName == fd.nickName) {
                 fd.order = allData[i].order;
                 return;
               }
@@ -39,13 +35,13 @@ import {getTopN} from '../api/topFarmer'
             fd.order = -1;
           });
           return filterData;
-      } catch (error) {
-        if (error.response && error.response.data) {
-          alert(error.response.data.message);
-        } else {
-          alert(error);
+        } catch (error) {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            alert(error);
+          }
         }
-      }
       }
     }
   }
@@ -53,6 +49,15 @@ import {getTopN} from '../api/topFarmer'
 
 <style scoped>
 * {
-  text-align: center;
+  text-align: right;
 }
+.wrapper {
+  margin: 20px 0
+}
+.el-input {
+    width: 330px;
+  }
+  .el-form-item {
+    margin-bottom: 0;
+  }
 </style>
