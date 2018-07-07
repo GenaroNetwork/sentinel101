@@ -16,7 +16,7 @@
       <div class="address">{{row.address}}</div>
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
-      <div class="heft">{{row.heft}}</div>
+      <div class="heft">{{row.heft | formatNumber}}</div>
       <div class="info" @click.stop.prevent="toggleShowInfo(row)">
         <i v-if="!row.showExtra" class="el-icon-arrow-down"></i>
         <i v-if="row.showExtra" class="el-icon-arrow-up"></i>
@@ -49,7 +49,7 @@ export default {
       page:0,
       tableData: [],
       showData: [],
-      pageSize: 1
+      pageSize: 15
     }
   },
   methods: {
@@ -125,10 +125,10 @@ export default {
 }
 .table-header {
   font-weight: bold;
-  padding: 10px 0;
+  padding: 10px 10px 10px 0;
 }
 .table-row {
-  padding: 20px 0;
+  padding: 20px 10px 20px 0;
   margin: 10px 0;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
   border-radius: 6px;
