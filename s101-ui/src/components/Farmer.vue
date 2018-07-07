@@ -118,9 +118,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tb-wrap {
-  margin: 0 auto;
+  margin: 30px auto;
   width: 1024px;
-  padding: 30px 0;
   font-size: 18px;
 }
 .table-header {

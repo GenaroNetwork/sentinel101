@@ -5,8 +5,24 @@ const BN = require('bn.js');
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
-
-const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://118.31.61.119:8547"))
+let web3
+function makeWeb3() {
+  let provider = new Web3.providers.WebsocketProvider("ws://118.31.61.119:8547")
+  let _web3 = new Web3(provider)
+  if (typeof provider.connection.onerror === 'function') {
+    let oldOnclose = provider.connection.onerror
+    provider.connection.onclose = function(err) {
+      console.error("websocket error")
+      oldOnclose()
+      setTimeout(()=>{
+        console.log('recreating web3')
+        web3 = makeWeb3()
+      }, 3000)
+    }
+  }
+  return _web3
+}
+web3 = makeWeb3()
 
 let totalStake = new BN(0)
 let isSyncing = false
