@@ -4,6 +4,7 @@ const Hapi = require('hapi')
 const topFarmer = require('./topFarmer')
 const farmerStake = require('./farmerStake')
 const Boom = require('boom')
+const { isAddress } = require('web3-utils')
 
 // Create a server with a host and port
 const server = Hapi.server({
@@ -35,6 +36,9 @@ server.route({
   handler: async function (request, h) {
     var pp = request.payload
     if (pp && pp.address && pp.nickName) {
+      if(!isAddress(pp.address)) {
+        throw Boom.badData('invalid address')
+      }
       try {
         await topFarmer.register(pp.address, pp.nickName)
         return h.response().code(201)

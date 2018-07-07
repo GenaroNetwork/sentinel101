@@ -1,4 +1,5 @@
 import * as axios from 'axios'
+import { isAddress } from 'web3-utils'
 
 const fetchUrl = "http://localhost:8000/top-farmer"
 const registerUrl = "http://localhost:8000/register-farmer"
@@ -12,6 +13,16 @@ async function getTopN() {
 }
 
 async function register (address, nickName) {
+    if(!address) {
+        throw new Error('missing address')
+    }
+    if(!nickName) {
+        throw new Error('missing nickName')
+    }
+    if(!isAddress(address)) {
+        throw new Error('invalid address')
+    }
+
     await axios.post(registerUrl, {
         address, nickName
     })

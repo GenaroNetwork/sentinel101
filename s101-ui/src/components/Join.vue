@@ -13,27 +13,30 @@
 </template>
 
 <script>
-
-import {register} from '../api/topFarmer'
-  export default {
-    data() {
-      return {
-        formInline: {
-          user: '',
-          nickname: ''
-        }
+import { register } from "../api/topFarmer";
+export default {
+  data() {
+    return {
+      formInline: {
+        user: "",
+        nickname: ""
       }
-    },
-    methods: {
-      async onSubmit() {
-        try {
-          await register(this.formInline.user, this.formInline.nickname)
-        } catch (error) {
-          alert(error.response.data.message)
+    };
+  },
+  methods: {
+    async onSubmit() {
+      try {
+        await register(this.formInline.user, this.formInline.nickname);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          alert(error.response.data.message);
+        } else {
+          alert(error);
         }
       }
     }
   }
+};
 </script>
 
 <style scoped>
