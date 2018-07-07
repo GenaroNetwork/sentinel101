@@ -8,9 +8,23 @@ function sleep (ms) {
 let isSyncing = false
 let gTopN = []
 
-function getTopN (address) {
+async function getTopN (address) {
   if(address) {
-    return gTopN.filter(g => g.address == address);
+    let topDatas = gTopN.filter(g => g.address == address);
+    let allDatas = (await axios.get(config.topFarmerUrl + '?address=' + address)).data;
+    modify(allDatas);
+    allDatas.forEach(aD => {
+      if(aD) {
+        for(let i = 0, length = topDatas.length; i < length; i++) {
+          if(aD.nickName === topDatas[i].nickName) {
+            aD.order = topDatas[i].order;
+            return;
+          }
+        }
+        aD.order = -1;
+      }
+    });
+    return allDatas;
   }
   return gTopN
 }
