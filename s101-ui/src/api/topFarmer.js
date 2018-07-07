@@ -19,6 +19,9 @@ async function register (address, nickName) {
     if(!nickName) {
         throw new Error('missing nickName')
     }
+    if(nickName.length > 10) {
+        throw new Error('nickName too long')
+    }
     if(!isAddress(address)) {
         throw new Error('invalid address')
     }

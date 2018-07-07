@@ -36,6 +36,9 @@ server.route({
   handler: async function (request, h) {
     var pp = request.payload
     if (pp && pp.address && pp.nickName) {
+      if(pp.nickName.length > 10) {
+        throw Boom.badData('nickName too long')
+      }
       if(!isAddress(pp.address)) {
         throw Boom.badData('invalid address')
       }
