@@ -16,7 +16,7 @@
       <div class="address">{{row.address}}</div>
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
-      <div class="heft">{{row.heft | formatNumber}}</div>
+      <div class="heft">{{row.sentinel * 10000 | formatNumber}}</div>
       <div class="info" @click.stop.prevent="toggleShowInfo(row)">
         <i v-if="!row.showExtra" class="el-icon-arrow-down"></i>
         <i v-if="row.showExtra" class="el-icon-arrow-up"></i>

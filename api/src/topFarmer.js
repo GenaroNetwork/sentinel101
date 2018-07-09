@@ -7,6 +7,8 @@ function sleep (ms) {
 
 let isSyncing = false
 let gTopN = []
+let allStake = 0
+let allHeft = 0
 
 async function getTopN (address) {
   if(address) {
@@ -18,10 +20,12 @@ async function getTopN (address) {
         for(let i = 0, length = topDatas.length; i < length; i++) {
           if(aD.nickName === topDatas[i].nickName) {
             aD.order = topDatas[i].order;
+            aD.sentinel = topDatas[i].sentinel;
             return;
           }
         }
         aD.order = -1;
+        aD.sentinel = aD.stake / allStake + aD.heft / allHeft;
       }
     });
     return allDatas;
@@ -39,12 +43,32 @@ function modify (farmers) {
   })
 }
 
+function sort (farmers) {
+  allStake = 0;
+  allHeft = 0;
+  farmers.forEach(f => {
+    allStake += f.stake || 0;
+    allHeft += f.heft || 0;
+  });
+
+  farmers.forEach(f => {
+    allStake = allStake || 1;
+    allHeft = allHeft || 1;
+    f.sentinel = f.stake / allStake + f.heft / allHeft;
+  });
+
+  return farmers.sort((f1, f2) => {
+    return f2.sentinel - f1.sentinel;
+  });
+}
+
 async function refresh () {
   console.log(Date.now() + ' refresh top N')
-  const topN = (await axios.get(config.topFarmerUrl)).data
+  let topN = (await axios.get(config.topFarmerUrl)).data
   if (Array.isArray(topN)) {
+    topN = sort(topN)
     modify(topN)
-    gTopN = topN
+    gTopN = topN.slice(0, topN.length > 300 ? 300 : topN.length)
     console.log(Date.now() + ' top N sync success')
   } else {
     throw new Error('response data is not array')
