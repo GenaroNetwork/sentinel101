@@ -1,5 +1,6 @@
 const axios = require('axios')
 const config = require('../config.json')
+const {getTotalStake} = require('./farmerStake')
 
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -44,10 +45,10 @@ function modify (farmers) {
 }
 
 function sort (farmers) {
-  allStake = 0;
+  allStake = parseInt(getTotalStake());
   allHeft = 0;
   farmers.forEach(f => {
-    allStake += f.stake || 0;
+    // allStake += f.stake || 0;
     allHeft += f.heft || 0;
   });
 
