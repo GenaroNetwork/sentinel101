@@ -105,11 +105,11 @@ export default {
   async created() {
     const this2 = this
     await this2.fetchTopN()
-    this2.refreshStake()
+    //this2.refreshStake()
     this2.handleCurrentChange(1)
     setInterval(async ()=>{
       await this2.fetchTopN()
-      this2.refreshStake()
+      //this2.refreshStake()
     }, 5000)
   }
 }

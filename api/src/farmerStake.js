@@ -7,7 +7,7 @@ function sleep (ms) {
 }
 let web3
 function makeWeb3() {
-  let provider = new Web3.providers.WebsocketProvider("ws://118.31.61.119:8547")
+  let provider = new Web3.providers.WebsocketProvider("ws://47.100.107.16:8547")
   let _web3 = new Web3(provider)
   if (typeof provider.connection.onerror === 'function') {
     let oldOnclose = provider.connection.onerror
