@@ -1,6 +1,6 @@
 const axios = require('axios')
 const config = require('../config.json')
-const {getTotalStake} = require('./farmerStake')
+const {getTotalStake, getFarmerStake} = require('./farmerStake')
 
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -67,6 +67,9 @@ async function refresh () {
   console.log(Date.now() + ' refresh top N')
   let topN = (await axios.get(config.topFarmerUrl)).data
   if (Array.isArray(topN)) {
+    for(let fm of topN) {
+      fm.stake = await getFarmerStake(fm.address)
+    }
     topN = sort(topN)
     modify(topN)
     gTopN = topN.slice(0, topN.length > 300 ? 300 : topN.length)
