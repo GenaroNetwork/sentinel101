@@ -74,6 +74,7 @@ export default {
   padding: 30px 0;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
   border-radius: 6px;
+  background-color: white;
 
   display: flex;
   justify-content: space-around;
