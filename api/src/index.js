@@ -2,7 +2,6 @@
 
 const Hapi = require('hapi')
 const topFarmer = require('./topFarmer')
-const farmerStake = require('./farmerStake')
 const Boom = require('boom')
 const { isAddress } = require('web3-utils')
 
@@ -25,8 +24,7 @@ server.route({
   path: '/top-farmer',
   config,
   handler: function (request, h) {
-    var address = request.query.address
-    return topFarmer.getTopN(address)
+    return topFarmer.getTopN()
   }
 })
 
@@ -57,19 +55,10 @@ server.route({
 
 server.route({
   method: 'GET',
-  path: '/total-stake',
-  config,
-  handler: function (request, h) {
-    return farmerStake.getTotalStake()
-  }
-})
-
-server.route({
-  method: 'GET',
   path: '/stake/{address}',
   config,
   handler: async function (request, h) {
-    return await farmerStake.getFarmerStake(request.params.address)
+    return await topFarmer.getFarmerStake(request.params.address)
   }
 })
 
@@ -86,7 +75,6 @@ server.route({
 async function start () {
   try {
     topFarmer.syncOn()
-    farmerStake.syncTotalStakeOn()
     await server.start()
   } catch (err) {
     console.log(err)
