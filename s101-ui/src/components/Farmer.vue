@@ -1,21 +1,31 @@
 <template>
 <div class="tb-wrap">
+  <el-form class="form" :inline="true" :model="formInline" ref="ruleForm" :rules="rules">
+    <el-form-item label="" prop="address">
+      <el-input clearable v-model="formInline.address" placeholder="请输入钱包地址"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit">搜索</el-button>
+    </el-form-item>
+  </el-form>
   <div class="table-header flex-wrap">
     <div class="order">排名</div>
     <div class="nickName">昵称</div>
     <div class="address">地址</div>
     <div class="stake">GNX Stake 量</div>
     <div class="spaceShared">空间使用量</div>
+    <div class="member">成员</div>
     <div class="heft">Sentinel</div>
     <div class="info"></div>
   </div>
-  <div class="table-row flex-wrap" v-for="row in showData" :key="row.address">
+  <div class="table-row flex-wrap" :class="row.address === searchResult ? 'highlight' : ''" :id="'c' + row.address" v-for="row in showData" :key="row.address">
     <div class="row-up flex-wrap">
       <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
       <div class="nickName">{{row.nickName}}</div>
       <div class="address">{{row.address}}</div>
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
+      <div class="member"><a @click.stop.prevent="toggleShowInfo(row)">{{row.subFarmers && row.subFarmers.length > 0 ? row.subFarmers.length + '/10' : ''}}</a></div>
       <div class="heft">{{row.sentinel * 10000 | formatNumber}}</div>
       <div class="info" @click.stop.prevent="toggleShowInfo(row)">
         <i v-if="!row.showExtra" class="el-icon-arrow-down"></i>
@@ -25,12 +35,16 @@
     <div class="row-down" v-if="row.showExtra">
       <div class="extra-row"><span class="leftc">GNX Stake 量</span> <span class="rightc">{{row.stake | formatNumber}}</span></div>
       <div class="extra-row"><span class="leftc">空间使用量</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
+      <div v-for="f in row.subFarmers" :key="f.address">
+        <div>{{f.address}}</div>
+      </div>
     </div>
   </div>
   <div class="block">
     <el-pagination
       background
       :page-size="pageSize"
+      :current-page.sync="pageNo"
       layout="prev, pager, next"
       :total="tableData.length"
       @current-change="handleCurrentChange">
@@ -40,16 +54,35 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import {getTopN} from '../api/topFarmer';
 import * as humanSize from 'human-size';
+import { isAddress } from 'web3-utils'
 
 export default {
   data() {
     return {
-      page:0,
       tableData: [],
       showData: [],
-      pageSize: 15
+      pageNo: 1,
+      pageSize: 15,
+      // search:
+      formInline: {
+        address: ''
+      },
+      rules: {
+        address: [
+          { required: true, message: '请输入钱包地址', trigger: 'blur' },
+          { validator: (rule, value, callback) => {
+            if (!isAddress(value)) {
+              callback(new Error("这不是正确的钱包地址"));
+            } else {
+              callback();
+            }
+          }, trigger: 'blur' }
+        ]
+      },
+      searchResult: null
     }
   },
   methods: {
@@ -92,6 +125,35 @@ export default {
       },
       handleCurrentChange(currentPage) {
         this.showData = this.tableData.slice((currentPage - 1) * this.pageSize, currentPage * this.pageSize);
+      },
+      async onSubmit() {
+        const this2 = this
+        function highLight(addr) {
+          Vue.nextTick(() => {
+            const e = document.querySelector('#c' + addr)
+            if(e) {
+              e.scrollIntoView({behavior: 'smooth'})
+            }
+          })
+        }
+        this.$refs["ruleForm"].validate(async (valid) => {
+          if(!valid) {
+            return;
+          }
+          this2.searchResult = addr
+          const addr = this2.formInline.address
+          const index = this2.tableData.findIndex(o => o.address == addr);
+          if(index === -1) {
+            // TODO: not a main account, search for sub account
+            this2.$message('没有搜到结果')
+          } else {
+            const pageIndex = Math.floor(index / this2.pageSize) + 1
+            this2.pageNo = pageIndex
+            this2.handleCurrentChange(this2.pageNo)
+            highLight(addr)
+          }
+          
+        })
       }
   },
   async created() {
@@ -167,6 +229,18 @@ export default {
   width: 150px;
   flex-shrink: 0;
 }
+.spaceShared {
+  width: 150px;
+  flex-shrink: 0;
+}
+.member {
+  width: 80px;
+  flex-shrink: 0;
+}
+.member a {
+  cursor: pointer;
+  text-decoration:underline;
+}
 .heft {
   width: 120px;
   flex-shrink: 0;
@@ -196,36 +270,64 @@ export default {
   .address {
   flex-shrink: 1;
   }
-.nickName {
-  width: 80px;
-  flex-shrink: 0;
-}
-.heft {
-  width: 60px;
-  flex-shrink: 0;
+  .nickName {
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .heft {
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .info {
+    width: 30px;
+    flex-shrink: 0;
+    display:unset;
+    color: rgba(0,0,0,0.4);
+    text-align: center;
+  }
+  .row-down {
+    padding-top: 15px;
+    width: 100%;
+  }
+  .row-down .leftc {
+    padding-left: 24px;
+  }
+  .row-down .rightc {
+    padding-right: 30px;
+  }
+  .extra-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 
-.info {
-  width: 30px;
-  flex-shrink: 0;
-  display:unset;
-  color: rgba(0,0,0,0.4);
-  text-align: center;
+
+
+.el-input {
+  width: 330px;
 }
-.row-down {
-  padding-top: 15px;
-  width: 100%;
+.el-form-item {
+  margin-bottom: 0;
 }
-.row-down .leftc {
-  padding-left: 24px;
+.form {
+  text-align: right;
 }
-.row-down .rightc {
-  padding-right: 30px;
+.right-align {
+  text-align: right;
+  padding-right: 6px;
 }
-.extra-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+.result {
+  margin: 0 auto;
+  font-size: 16px;
 }
+@media only screen and (max-width: 1024px) {
+  .wrapper {
+    display: none;
+  }
+}
+.highlight {
+  font-weight: bold
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="font-hei">
     <h1>Genaro Sharer 排行</h1>
-    <Join />
+    <!-- <Join /> -->
     <Statistics />
-    <Search />
+    <!-- <Search /> -->
     <Farmer />
   </div>
 </template>
