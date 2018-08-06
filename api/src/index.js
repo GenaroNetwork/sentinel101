@@ -62,6 +62,15 @@ server.route({
   }
 })
 
+server.route({
+  method: 'GET',
+  path: '/farmer/{address}',
+  config,
+  handler: function (request, h) {
+    return topFarmer.getFarmer(request.params.address)
+  }
+})
+
 // Start the server
 async function start () {
   try {

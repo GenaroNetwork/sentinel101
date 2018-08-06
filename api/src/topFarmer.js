@@ -11,7 +11,7 @@ let gCacheDB = {
   totalStake:0,
   totalHeft:0,
   totalDataSize:0,
-  allFarmer:[],
+  allFarmers:null,
   topN:[],
 }
 
@@ -173,7 +173,7 @@ function getSortedFarmer(farmerMap, relation) {
 async function getCurrentTopFarmers() {
   const r = await getCurrentRelation()
   const farmerMap = await fetchAllFarmers(r)
-  gCacheDB.allFarmer = farmerMap
+  gCacheDB.allFarmers = farmerMap
   const orderedFarmer = getSortedFarmer(farmerMap, r)
   gCacheDB.topN = orderedFarmer
 }
@@ -219,10 +219,18 @@ function getTotalStake() {
   return gCacheDB.totalStake
 }
 
+function getFarmer(addr) {
+  if(gCacheDB.allFarmers && gCacheDB.allFarmers.has(addr)) {
+    return gCacheDB.allFarmers.get(addr)
+  }
+  return null
+}
+
 module.exports = {
   getTopN,
   syncOn,
   register,
   getFarmerOutline,
-  getTotalStake
+  getTotalStake,
+  getFarmer,
 }
