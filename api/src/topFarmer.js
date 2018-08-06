@@ -11,8 +11,8 @@ let gCacheDB = {
   totalStake:0,
   totalHeft:0,
   totalDataSize:0,
-  allFarmer,
-  topN,
+  allFarmer:[],
+  topN:[],
 }
 
 let isSyncing = false
@@ -224,6 +224,5 @@ module.exports = {
   syncOn,
   register,
   getFarmerOutline,
-  getTotalStake,
-  getFarmerStake
+  getTotalStake
 }

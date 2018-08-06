@@ -55,15 +55,6 @@ server.route({
 
 server.route({
   method: 'GET',
-  path: '/stake/{address}',
-  config,
-  handler: async function (request, h) {
-    return await topFarmer.getFarmerStake(request.params.address)
-  }
-})
-
-server.route({
-  method: 'GET',
   path: '/farmer-outline',
   config,
   handler: async function (request, h) {
