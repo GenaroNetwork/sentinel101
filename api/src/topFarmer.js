@@ -216,7 +216,10 @@ async function syncOn () {
   isSyncing = true
   do {
     try {
+      const btime = Date.now()
       await getCurrentTopFarmers()
+      const etime = Date.now()
+      console.log(`Time used: ${etime - btime}`)
     } catch (error) {
       console.log('refresh error' + error)
     }
