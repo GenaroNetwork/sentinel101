@@ -52,7 +52,7 @@
 
 <script>
 
-  import {getTopN, getFarmerStake} from '../api/topFarmer'
+  import {getTopN} from '../api/topFarmer'
   import { isAddress } from 'web3-utils'
   export default {
     data() {
@@ -78,7 +78,6 @@
     },
     methods: {
       async onSubmit() {
-        const this2 = this
         this.$refs["ruleForm"].validate(async (valid) => {
           if(valid) {
             try {
@@ -88,10 +87,6 @@
                 let sr = filterData[0]
                 this.searchResult = sr
                 this.searchResultVisible = true
-
-                getFarmerStake(sr.address).then(s => {
-                  this2.$set(sr, 'stake', s)
-                })
               } else {
                 this.$message('没有搜到结果');
               }

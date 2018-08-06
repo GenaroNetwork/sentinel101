@@ -28,19 +28,19 @@
     </div>
   </div>
   <div class="block">
-  <el-pagination
-    background
-    :page-size="pageSize"
-    layout="prev, pager, next"
-    :total="tableData.length"
-    @current-change="handleCurrentChange">
-  </el-pagination>
-</div>
+    <el-pagination
+      background
+      :page-size="pageSize"
+      layout="prev, pager, next"
+      :total="tableData.length"
+      @current-change="handleCurrentChange">
+    </el-pagination>
+  </div>
 </div>
 </template>
 
 <script>
-import {getTopN, getFarmerStake} from '../api/topFarmer';
+import {getTopN} from '../api/topFarmer';
 import * as humanSize from 'human-size';
 
 export default {
@@ -82,21 +82,13 @@ export default {
         // remember opend
         let openAddress = this2.tableData.filter(row => row.showExtra === true).map(row => row.address)
         let newData = await getTopN()
-        newData.forEach(row => {
+        newData.forEach((row, index) => {
           if(openAddress.includes(row.address)) {
             row.showExtra = true
           }
+          row.order = index
         })
         this2.tableData = newData
-      },
-      refreshStake() {
-        const this2 = this
-        this2.tableData.forEach((row) => {
-          getFarmerStake(row.address).then(s => {
-            this2.$set(row, 'stake', s)
-          })
-        })
-        return 
       },
       handleCurrentChange(currentPage) {
         this.showData = this.tableData.slice((currentPage - 1) * this.pageSize, currentPage * this.pageSize);
@@ -105,11 +97,9 @@ export default {
   async created() {
     const this2 = this
     await this2.fetchTopN()
-    //this2.refreshStake()
     this2.handleCurrentChange(1)
     setInterval(async ()=>{
       await this2.fetchTopN()
-      //this2.refreshStake()
     }, 5000)
   }
 }

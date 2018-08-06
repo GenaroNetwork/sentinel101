@@ -3,8 +3,8 @@ import { isAddress } from 'web3-utils'
 
 const fetchUrl = "http://118.31.61.119:8000/top-farmer"
 const registerUrl = "http://118.31.61.119:8000/register-farmer"
-const totalStakeUrl = "http://118.31.61.119:8000/total-stake"
-const farmerStakeUrl = "http://118.31.61.119:8000/stake/"
+//const totalStakeUrl = "http://118.31.61.119:8000/total-stake"
+//const farmerStakeUrl = "http://118.31.61.119:8000/stake/"
 const farmerOutline = "http://118.31.61.119:8000/farmer-outline"
 
 
@@ -38,14 +38,6 @@ async function register (address, nickName) {
     })
 }
 
-async function getTotalStake() {
-    return (await axios.get(totalStakeUrl)).data
-}
-
-async function getFarmerStake(addr) {
-    return (await axios.get(farmerStakeUrl + addr)).data
-}
-
 async function getFarmerOutline() {
     return (await axios.get(farmerOutline)).data
 }
@@ -53,7 +45,5 @@ async function getFarmerOutline() {
 export {
     getTopN,
     register,
-    getTotalStake,
-    getFarmerStake,
     getFarmerOutline
 }

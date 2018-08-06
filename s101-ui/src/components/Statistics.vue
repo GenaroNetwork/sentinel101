@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {getFarmerOutline, getTotalStake} from '../api/topFarmer'
+import {getFarmerOutline} from '../api/topFarmer'
 const MB = 1024 * 1024
 const GB = 1024 * MB
 const TB = 1024 * GB
@@ -53,8 +53,8 @@ export default {
   },
   methods: {
     async refreshData() {
-      this.totalStake = await getTotalStake()
       const ol = await getFarmerOutline()
+      this.totalStake = ol.totalStake
       this.totalHeft = ol.totalHeft
       this.totalDataSize = ol.totalDataSize
     }
