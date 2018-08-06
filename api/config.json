@@ -2,6 +2,6 @@
     "topFarmerUrl": "http://118.31.61.119:8080/top-farmer",
     "registerUrl": "http://118.31.61.119:8080/register-farmer",
     "allFarmers": "http://118.31.61.119:8080/farmers",
-    "fetchInterval": 10000,
+    "fetchInterval": 20000,
     "BLOCK_COUNT_OF_ROUND": 86400
 }

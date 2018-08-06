@@ -153,9 +153,9 @@ async function fetchAllFarmers(relation) {
   gCacheDB.totalHeft = totalHeft
   gCacheDB.totalStake = totalStake
   gCacheDB.totalDataSize = totalDataSize
-  // 6. calculate sentinal, make data without big brother relation
+  // 6. calculate sentinel, make data without big brother relation
   for (let f of farmerMap.values()) {
-    f.sentinal = f.stake / totalStake + f.heft / totalHeft // total value shouldn't be zero
+    f.sentinel = f.stake / totalStake + f.heft / totalHeft // total value shouldn't be zero
   }
   // 7. add subs to main
   const sub2Main = relation.getSubToMainMap()
@@ -186,7 +186,7 @@ function getSortedFarmer(farmerMap, relation) {
           f.stake += subFarmer.stake
           f.heft += subFarmer.heft
           f.data_size += subFarmer.data_size
-          f.sentinal += subFarmer.sentinal
+          f.sentinel += subFarmer.sentinel
         } else {
           console.log(`${f.address}'s subfarmer not found: ${subAddr}`)
         }
@@ -196,7 +196,7 @@ function getSortedFarmer(farmerMap, relation) {
   }
   // 7. sort
   newFarmers.sort((f1, f2) => {
-    return f2.sentinal - f1.sentinal
+    return f2.sentinel - f1.sentinel
   })
   return newFarmers
 }
