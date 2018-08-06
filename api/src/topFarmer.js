@@ -59,9 +59,29 @@ async function getCurrentRelation() {
   const committee = await getCurrentCommitteeAccountBinding()
   const allSubs = _.flatten(Object.values(committee))
   const subSet = new Set(allSubs)
-  function hasMain(addr) {
-    return subSet.has(addr)
+  const subToMain = new Map()
+
+  for (const mainAddr in committee) {
+    const subs = getSub(mainAddr)
+    if(subs) {
+      subs.forEach(subAddr => {
+        subToMain.set(subAddr, mainAddr)
+      })
+    }
   }
+
+  function hasMain(addr) {
+    return subToMain.has(addr)
+  }
+
+  function getMain(addr) {
+    return subToMain.get(addr)
+  }
+
+  function getSubToMainMap() {
+    return subToMain
+  }
+
   function getSub(addr) {
     const subs = committee[addr]
     if(subs && subs.length > 0) {
@@ -74,6 +94,8 @@ async function getCurrentRelation() {
   }
   return {
     hasMain,
+    getMain,
+    getSubToMainMap,
     getSub,
     getSubSet
   }
@@ -106,7 +128,7 @@ async function fetchAllFarmers(relation) {
       })
     }
   })
-  // 4. merge subs
+  // 4. merge subs. some sub farmer not exist in candidates nor in bridge DB because no share
   const subs = relation.getSubSet()
   subs.forEach(can => {
     if(!farmerMap.has(can)) {
@@ -135,6 +157,15 @@ async function fetchAllFarmers(relation) {
   for (let f of farmerMap.values()) {
     f.sentinal = f.stake / totalStake + f.heft / totalHeft // total value shouldn't be zero
   }
+  // 7. add subs to main
+  const sub2Main = relation.getSubToMainMap()
+  sub2Main.forEach((mainAddr, subAddr) => {
+    const mainf = farmerMap.get(mainAddr)
+    if(!mainf.subFarmers) {
+      mainf.subFarmers = []
+    }
+    mainf.subFarmers.push(farmerMap.get(subAddr))
+  })
   return farmerMap
 }
 
