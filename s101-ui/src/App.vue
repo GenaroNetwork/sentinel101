@@ -15,10 +15,8 @@ import Farmer from './components/Farmer.vue'
 export default {
   name: 'app',
   components: {
-    Join,
     Statistics,
-    Farmer,
-    Search
+    Farmer
   }
 }
 </script>
