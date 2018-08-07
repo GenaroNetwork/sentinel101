@@ -38,7 +38,7 @@
         <div class="extra-row"><span class="leftc">空间使用量：</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
       </div>
       <div>
-        <div class="sub-farmer" v-for="f in row.subFarmers" :key="f.address">
+        <div class="sub-farmer" :class="f.address === searchResult ? 'highlight' : ''" :id="'c' + f.address" v-for="f in row.subFarmers" :key="f.address">
           <div class="nickName">{{nickName(f)}}</div>
           <div class="address">{{f.address}}</div>
           <div class="heft">{{f.sentinel * 10000 | formatNumber}}</div>
@@ -154,17 +154,26 @@ export default {
           }
           const addr = this2.formInline.address
           this2.searchResult = addr
-          const index = this2.tableData.findIndex(o => o.address == addr);
+          let index = this2.tableData.findIndex(o => o.address == addr);
           if(index === -1) {
             // TODO: not a main account, search for sub account
+            index = this2.tableData.findIndex(f => {
+              if(f.subFarmers && f.subFarmers.length > 0) {
+                return f.subFarmers.find(o => o.address == addr);
+              }
+            })
+          }
+          if(index === -1) {
             this2.$message('没有搜到结果')
           } else {
             const pageIndex = Math.floor(index / this2.pageSize) + 1
             this2.pageNo = pageIndex
             this2.handleCurrentChange(this2.pageNo)
             highLight(addr)
+            if(this2.tableData[index].subFarmers) {
+              this.$set(this2.tableData[index], 'showExtra', true)
+            }
           }
-          
         })
       }
   },
