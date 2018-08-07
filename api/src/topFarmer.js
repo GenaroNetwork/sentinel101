@@ -57,8 +57,12 @@ async function getCandidates() {
 
 async function getCurrentRelation() {
   const committee = await getCurrentCommitteeAccountBinding()
-  if(!committee) return null
-  const allSubs = _.flatten(Object.values(committee))
+  let allSubs
+  if(!committee) {
+    allSubs = []
+  } else {
+    allSubs = _.flatten(Object.values(committee))
+  }
   const subSet = new Set(allSubs)
   const subToMain = new Map()
 
@@ -84,9 +88,11 @@ async function getCurrentRelation() {
   }
 
   function getSub(addr) {
-    const subs = committee[addr]
-    if(subs && subs.length > 0) {
-      return subs
+    if(committee) {
+      const subs = committee[addr]
+      if(subs && subs.length > 0) {
+        return subs
+      }
     }
     return null
   }
