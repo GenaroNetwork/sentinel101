@@ -57,6 +57,7 @@ async function getCandidates() {
 
 async function getCurrentRelation() {
   const committee = await getCurrentCommitteeAccountBinding()
+  if(!committee) return null
   const allSubs = _.flatten(Object.values(committee))
   const subSet = new Set(allSubs)
   const subToMain = new Map()
@@ -203,6 +204,7 @@ function getSortedFarmer(farmerMap, relation) {
 
 async function getCurrentTopFarmers() {
   const r = await getCurrentRelation()
+  if(!r) return
   const farmerMap = await fetchAllFarmers(r)
   gCacheDB.allFarmers = farmerMap
   const orderedFarmer = getSortedFarmer(farmerMap, r)
@@ -221,7 +223,8 @@ async function syncOn () {
       const etime = Date.now()
       console.log(`Time used: ${etime - btime}`)
     } catch (error) {
-      console.log('refresh error' + error)
+      console.error('refresh error')
+      console.error(error.stack)
     }
     await sleep(config.fetchInterval)
   } while (true)
