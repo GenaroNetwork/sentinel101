@@ -10,7 +10,7 @@
   </el-form>
   <div class="table-header flex-wrap">
     <div class="order">排名</div>
-    <div class="nickName">昵称</div>
+    <!-- <div class="nickName">昵称</div> -->
     <div class="address">地址</div>
     <div class="stake">GNX Stake 量</div>
     <div class="spaceShared">空间使用量</div>
@@ -21,7 +21,7 @@
   <div class="table-row flex-wrap" :class="row.address === searchResult ? 'highlight' : ''" :id="'c' + row.address" v-for="row in showData" :key="row.address">
     <div class="row-up flex-wrap">
       <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
-      <div class="nickName">{{nickName(row)}}</div>
+      <!-- <div class="nickName">{{nickName(row)}}</div> -->
       <div class="address">{{row.address}}</div>
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
@@ -39,7 +39,7 @@
       </div>
       <div>
         <div class="sub-farmer" :class="f.address === searchResult ? 'highlight' : ''" :id="'c' + f.address" v-for="f in row.subFarmers" :key="f.address">
-          <div class="nickName">{{nickName(f)}}</div>
+          <!-- <div class="nickName">{{nickName(f)}}</div> -->
           <div class="address">{{f.address}}</div>
           <div class="heft">{{f.sentinel * 10000 | formatNumber}}</div>
         </div>
