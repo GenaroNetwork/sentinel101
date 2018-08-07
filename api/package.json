@@ -16,6 +16,7 @@
     "genaro-web3": "^0.6.1",
     "hapi": "^17.5.2",
     "lodash": "^4.17.10",
+    "lowdb": "^1.0.0",
     "secp256k1": "^3.5.0"
   },
   "devDependencies": {
