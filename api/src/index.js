@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi')
 const topFarmer = require('./topFarmer')
+const nickNameManager = require('./nickName')
 const Boom = require('boom')
 const { isAddress } = require('web3-utils')
 
@@ -29,31 +30,6 @@ server.route({
 })
 
 server.route({
-  method: 'POST',
-  path: '/register-farmer',
-  config,
-  handler: async function (request, h) {
-    var pp = request.payload
-    if (pp && pp.address && pp.nickName) {
-      if(pp.nickName.length > 10) {
-        throw Boom.badData('nickName too long')
-      }
-      if(!isAddress(pp.address)) {
-        throw Boom.badData('invalid address')
-      }
-      try {
-        await topFarmer.register(pp.address, pp.nickName)
-        return h.response().code(201)
-      } catch (error) {
-        throw Boom.notFound(error.message)
-      }
-    } else {
-      throw Boom.badData('your data is bad and you should feel bad')
-    }
-  }
-})
-
-server.route({
   method: 'GET',
   path: '/farmer-outline',
   config,
@@ -68,6 +44,15 @@ server.route({
   config,
   handler: function (request, h) {
     return topFarmer.getFarmer(request.params.address)
+  }
+})
+
+server.route({
+  method: 'POST',
+  path: '/farmer/{address}/nick',
+  config,
+  handler: function (request, h) {
+    return nickNameManager.setNickName(request.params.address, request.payload, request.headers['x-signature'], request.headers['x-pubkey'])
   }
 })
 
