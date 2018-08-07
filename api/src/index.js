@@ -52,7 +52,13 @@ server.route({
   path: '/farmer/{address}/nick',
   config,
   handler: function (request, h) {
-    return nickNameManager.setNickName(request.params.address, request.payload, request.headers['x-signature'], request.headers['x-pubkey'])
+    try {
+      nickNameManager.setNickName(request)
+      return h.response().code(200)
+    } catch(e) {
+      console.error(e)
+      return h.response().code(400)
+    }
   }
 })
 

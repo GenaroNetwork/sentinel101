@@ -238,20 +238,6 @@ async function getFarmerOutline() {
     }
 }
 
-async function register (address, nickName) {
-  try {
-    await axios.post(config.registerUrl, {
-      address, nickName
-    })
-  } catch (error) {
-    if (error && error.response && error.response.data) {
-      throw new Error(error.response.data.error)
-    } else {
-      throw error
-    }
-  }
-}
-
 function getTotalStake() {
   return gCacheDB.totalStake
 }
@@ -266,7 +252,6 @@ function getFarmer(addr) {
 module.exports = {
   getTopN,
   syncOn,
-  register,
   getFarmerOutline,
   getTotalStake,
   getFarmer,
