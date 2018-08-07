@@ -154,7 +154,7 @@ export default {
           }
           const addr = this2.formInline.address
           this2.searchResult = addr
-          let index = this2.tableData.findIndex(o => o.address == addr);
+          let index = this2.tableData.findIndex(o => o.address === addr);
           if(index === -1) {
             // TODO: not a main account, search for sub account
             index = this2.tableData.findIndex(f => {
