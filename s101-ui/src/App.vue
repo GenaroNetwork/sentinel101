@@ -32,7 +32,7 @@ body {
   margin: 0;
 
   background: url(/bg.jpg);
-  background-position: top -100px center;
+  background-position: top -160px center;
   background-size: auto 360px;
   background-repeat: repeat-x;
 }

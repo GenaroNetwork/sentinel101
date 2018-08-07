@@ -21,7 +21,7 @@
   <div class="table-row flex-wrap" :class="row.address === searchResult ? 'highlight' : ''" :id="'c' + row.address" v-for="row in showData" :key="row.address">
     <div class="row-up flex-wrap">
       <div class="order" v-bind:class="{top3: row.order < 3}">{{row.order + 1}}</div>
-      <div class="nickName">{{row.nickName}}</div>
+      <div class="nickName">{{nickName(row)}}</div>
       <div class="address">{{row.address}}</div>
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
@@ -33,10 +33,16 @@
       </div>
     </div>
     <div class="row-down" v-if="row.showExtra">
-      <div class="extra-row"><span class="leftc">GNX Stake 量</span> <span class="rightc">{{row.stake | formatNumber}}</span></div>
-      <div class="extra-row"><span class="leftc">空间使用量</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
-      <div v-for="f in row.subFarmers" :key="f.address">
-        <div>{{f.address}}</div>
+      <div class="extra1">
+        <div class="extra-row"><span class="leftc">GNX Stake 量：</span> <span class="rightc">{{row.stake | formatNumber}} GNX</span></div>
+        <div class="extra-row"><span class="leftc">空间使用量：</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
+      </div>
+      <div>
+        <div class="sub-farmer" v-for="f in row.subFarmers" :key="f.address">
+          <div class="nickName">{{nickName(f)}}</div>
+          <div class="address">{{f.address}}</div>
+          <div class="heft">{{f.sentinel * 10000 | formatNumber}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -100,6 +106,12 @@ export default {
           return 0
         }
       },
+      nickName(row) {
+        if(row.nickName) {
+          return row.nickName
+        }
+        return row.address.substr(0, 4)
+      },
       formatAddr(row) {
         return row.address
       },
@@ -136,12 +148,12 @@ export default {
             }
           })
         }
-        this.$refs["ruleForm"].validate(async (valid) => {
+        this.$refs["ruleForm"].validate((valid) => {
           if(!valid) {
             return;
           }
-          this2.searchResult = addr
           const addr = this2.formInline.address
+          this2.searchResult = addr
           const index = this2.tableData.findIndex(o => o.address == addr);
           if(index === -1) {
             // TODO: not a main account, search for sub account
@@ -199,6 +211,7 @@ export default {
 .order {
   width: 120px;
   flex-shrink: 0;
+  flex-grow: 0;
   text-align: center;
 }
 .top3 {
@@ -254,8 +267,52 @@ export default {
 .row-up {
   width: 100%;
 }
+
+.el-input {
+  width: 330px;
+}
+.el-form-item {
+  margin-bottom: 0;
+}
+.form {
+  text-align: right;
+}
+.right-align {
+  text-align: right;
+  padding-right: 6px;
+}
+.result {
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+
+.highlight {
+  font-weight: bold
+}
+
+.row-down {
+  box-sizing: border-box;
+  padding: 15px 0 0 120px;
+  padding-top: 15px;
+  width: 100%;
+}
+
+.extra1 {
+  display: none;
+}
+.extra1 .extra-row {
+  flex-grow: 1;
+}
+.sub-farmer {
+  display: flex;
+  font-size: 16px;
+  color: rgba(0,0,0,0.5);
+  margin: 5px 0;
+}
+
 @media only screen and (max-width: 1024px) {
-  .stake, .spaceShared{
+  .stake, .spaceShared, .member{
     display: none;
   }
 
@@ -286,48 +343,31 @@ export default {
     color: rgba(0,0,0,0.4);
     text-align: center;
   }
-  .row-down {
-    padding-top: 15px;
-    width: 100%;
-  }
-  .row-down .leftc {
-    padding-left: 24px;
-  }
-  .row-down .rightc {
-    padding-right: 30px;
-  }
   .extra-row {
-    display: flex;
+    font-size: 12px;
     justify-content: space-between;
     width: 100%;
   }
-}
-
-
-
-.el-input {
-  width: 330px;
-}
-.el-form-item {
-  margin-bottom: 0;
-}
-.form {
-  text-align: right;
-}
-.right-align {
-  text-align: right;
-  padding-right: 6px;
-}
-.result {
-  margin: 0 auto;
-  font-size: 16px;
-}
-@media only screen and (max-width: 1024px) {
   .wrapper {
     display: none;
   }
-}
-.highlight {
-  font-weight: bold
+  .extra1 {
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid rgba(0,0,0,0.1)
+  }
+  .row-down {
+    box-sizing: border-box;
+    padding: 15px 0 0 60px;
+    padding-top: 15px;
+    width: 100%;
+  }
+
+  .sub-farmer {
+    display: flex;
+    font-size: 12px;
+    color: rgba(0,0,0,0.5);
+    margin: 5px 0;
+  }
 }
 </style>
