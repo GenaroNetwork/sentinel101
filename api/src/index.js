@@ -22,10 +22,16 @@ const config = {
 // Add the route
 server.route({
   method: 'GET',
-  path: '/top-farmer',
+  path: '/top-farmer/{all?}',
   config,
   handler: function (request, h) {
-    return topFarmer.getTopN()
+    const all = 'all' === request.params.all
+    const topn = topFarmer.getTopN()
+    if(all) {
+      return topn
+    } else {
+      return topn.filter(f => f.sentinel !== 0)
+    }
   }
 })
 
