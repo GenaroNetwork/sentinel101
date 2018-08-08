@@ -1,5 +1,5 @@
 const axios = require('axios')
-const _ = require('lodash');
+const _ = require('lodash')
 const config = require('../config.json')
 const getWeb3 = require('./web3Manager')
 
@@ -44,10 +44,10 @@ function modify (farmers) {
 
 async function getCurrentCommitteeAccountBinding() {
   let web3 = getWeb3()
-  const bno = await web3.eth.getBlockNumber();
-  const thisRoundFirstBlock = bno - bno % config.BLOCK_COUNT_OF_ROUND;
-  const extraInfo = await web3.genaro.getExtra(thisRoundFirstBlock);
-  return extraInfo.CommitteeAccountBinding;
+  const bno = await web3.eth.getBlockNumber()
+  const thisRoundFirstBlock = bno - bno % config.BLOCK_COUNT_OF_ROUND
+  const extraInfo = await web3.genaro.getExtra(thisRoundFirstBlock)
+  return extraInfo.CommitteeAccountBinding
 }
 
 async function getCandidates() {
@@ -114,9 +114,9 @@ async function fetchAllFarmers(relation) {
   let totalDataSize = 0
   // 1. read all farmers from db
   let farmers = (await axios.get(config.allFarmers)).data
-  if(!farmers || !Array.isArray(farmers)) return null;
+  if(!farmers || !Array.isArray(farmers)) return null
   // 2. prepare farmer data map
-  let farmerMap = new Map();
+  let farmerMap = new Map()
   farmers.reduce((fmap, f) => {
     fmap.set(f.address, f)
     totalHeft += f.heft
@@ -180,9 +180,13 @@ function getSortedFarmer(farmerMap, relation) {
   // 5. merge data by big brother relation
   const newFarmers = []
   for(let f of farmerMap.values()) {
+    // top farmer must have heft
+    if(f.heft === 0) {
+      continue
+    }
     // if has big brother, just skip
     if(relation.hasMain(f.address)) {
-      continue;
+      continue
     }
     // if has followers
     const subs = relation.getSub(f.address)
@@ -195,7 +199,7 @@ function getSortedFarmer(farmerMap, relation) {
           f.data_size += subFarmer.data_size
           f.sentinel += subFarmer.sentinel
         } else {
-          console.log(`${f.address}'s subfarmer not found: ${subAddr}`)
+          console.error(`${f.address}'s subfarmer not found: ${subAddr}`)
         }
       })
     }
