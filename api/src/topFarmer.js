@@ -50,9 +50,24 @@ async function getCurrentCommitteeAccountBinding() {
   return extraInfo.CommitteeAccountBinding
 }
 
-async function getCandidates() {
-  let web3 = getWeb3()
-  return await web3.genaro.getCandidates('latest')
+async function getPendingRelation() {
+  const web3 = getWeb3()
+  const candis = await web3.genaro.getCandidates('latest')
+  let allSubs = []
+  if(!Array.isArray(candis)) {
+    allSubs = []
+  } else {
+    let subPromi = candis.map(addr => web3.genaro.getSubAccounts(addr, 'latest'))
+    const subArr = await Promise.all(subPromi)
+    allSubs = _.compact(_.flatten(subArr))
+  }
+
+  function getAll() {
+    return _.concat(candis, allSubs)
+  }
+  return {
+    getAll
+  }
 }
 
 async function getCurrentRelation() {
@@ -108,7 +123,7 @@ async function getCurrentRelation() {
   }
 }
 // relation.getSub(), relation.hasMain()
-async function fetchAllFarmers(relation) {
+async function fetchAllFarmers(relation, pendingRelation) {
   let totalStake = 0
   let totalHeft = 0
   let totalDataSize = 0
@@ -126,7 +141,7 @@ async function fetchAllFarmers(relation) {
     return fmap
   }, farmerMap)
   // 3. merge candidiates
-  const candis = await getCandidates()
+  const candis = pendingRelation.getAll()
   candis.forEach(can => {
     if(!farmerMap.has(can)) {
       farmerMap.set(can, {
@@ -217,9 +232,9 @@ function getSortedFarmer(farmerMap, relation) {
 }
 
 async function getCurrentTopFarmers() {
+  const rPending = await getPendingRelation()
   const r = await getCurrentRelation()
-  if(!r) return
-  const farmerMap = await fetchAllFarmers(r)
+  const farmerMap = await fetchAllFarmers(r, rPending)
   gCacheDB.allFarmers = farmerMap
   const orderedFarmer = getSortedFarmer(farmerMap, r)
   gCacheDB.topN = orderedFarmer
