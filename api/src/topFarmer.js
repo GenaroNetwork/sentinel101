@@ -53,53 +53,63 @@ async function getCurrentCommitteeAccountBinding() {
 async function getPendingRelation() {
   const web3 = getWeb3()
   const candis = await web3.genaro.getCandidates('latest')
-  let allSubs = []
-  if(!Array.isArray(candis)) {
-    allSubs = []
-  } else {
+  const subToMain = new Map()
+  const mainToSub = new Map()
+  if(Array.isArray(candis)) {
     let subPromi = candis.map(addr => web3.genaro.getSubAccounts(addr, 'latest'))
     const subArr = await Promise.all(subPromi)
-    allSubs = _.compact(_.flatten(subArr))
+    for(let i = 0; i < candis.length; i ++) {
+      const thesubs = subArr[i]
+      const mainAddr = candis[i]
+      if(thesubs && thesubs.length > 0) {
+        mainToSub.set(mainAddr, thesubs)
+        thesubs.forEach(sub => {
+          subToMain.set(sub, mainAddr)
+        })
+      }
+    }
   }
 
   function getAll() {
-    return _.concat(candis, allSubs)
+    const mains = Array.from(mainToSub.keys())
+    const subs = Array.from(subToMain.keys())
+    return mains.concat(subs)
   }
+  
+  function getSub(addr) {
+    return mainToSub.get(addr)
+  }
+
+  function getMain(addr) {
+    return subToMain.get(addr)
+  }
+  
   return {
-    getAll
+    getAll,
+    getMain,
+    getSub
   }
 }
 
 async function getCurrentRelation() {
   const committee = await getCurrentCommitteeAccountBinding()
   let allSubs
+  let allMains = []
   if(!committee) {
     allSubs = []
   } else {
     allSubs = _.flatten(Object.values(committee))
   }
-  const subSet = new Set(allSubs)
   const subToMain = new Map()
 
   for (const mainAddr in committee) {
+    allMains.push(mainAddr)
     const subs = getSub(mainAddr)
     if(subs) {
       subs.forEach(subAddr => {
         subToMain.set(subAddr, mainAddr)
       })
     }
-  }
-
-  function hasMain(addr) {
-    return subToMain.has(addr)
-  }
-
-  function getMain(addr) {
-    return subToMain.get(addr)
-  }
-
-  function getSubToMainMap() {
-    return subToMain
   }
 
   function getSub(addr) {
@@ -111,18 +121,21 @@ async function getCurrentRelation() {
     }
     return null
   }
-  function getSubSet() {
-    return subSet
+
+  function getMain(addr) {
+    return subToMain.get(addr)
+  }
+
+  function getAll() {
+    return allMains.concat(allSubs)
   }
   return {
-    hasMain,
+    getAll,
     getMain,
-    getSubToMainMap,
-    getSub,
-    getSubSet
+    getSub
   }
 }
-// relation.getSub(), relation.hasMain()
+// relation.getSub(),
 async function fetchAllFarmers(relation, pendingRelation) {
   let totalStake = 0
   let totalHeft = 0
@@ -140,9 +153,9 @@ async function fetchAllFarmers(relation, pendingRelation) {
     }
     return fmap
   }, farmerMap)
-  // 3. merge candidiates
-  const candis = pendingRelation.getAll()
-  candis.forEach(can => {
+  // 3. merge candidiates AND candidates' sub farmers
+  const pendingAll = pendingRelation.getAll()
+  pendingAll.forEach(can => {
     if(!farmerMap.has(can)) {
       farmerMap.set(can, {
         address: can,
@@ -151,8 +164,8 @@ async function fetchAllFarmers(relation, pendingRelation) {
     }
   })
   // 4. merge subs. some sub farmer not exist in candidates nor in bridge DB because no share
-  const subs = relation.getSubSet()
-  subs.forEach(can => {
+  const currentAll = relation.getAll()
+  currentAll.forEach(can => {
     if(!farmerMap.has(can)) {
       farmerMap.set(can, {
         address: can,
@@ -184,14 +197,26 @@ async function fetchAllFarmers(relation, pendingRelation) {
     }
   }
   // 7. add subs to main
-  const sub2Main = relation.getSubToMainMap()
-  sub2Main.forEach((mainAddr, subAddr) => {
-    const mainf = farmerMap.get(mainAddr)
-    if(!mainf.subFarmers) {
-      mainf.subFarmers = []
+  for (let f of farmerMap.values()) {
+    const subs = relation.getSub(f.address)
+    const pSubs = pendingRelation.getSub(f.address)
+    if(subs && subs.length > 0) {
+      if(!f.subFarmers) {
+        f.subFarmers = []
+      }
+      subs.forEach(subAddr => {
+        f.subFarmers.push(farmerMap.get(subAddr))
+      })
     }
-    mainf.subFarmers.push(farmerMap.get(subAddr))
-  })
+    if(pSubs && pSubs.length > 0) {
+      if(!f.pendingSubFarmers) {
+        f.pendingSubFarmers = []
+      }
+      pSubs.forEach(subAddr => {
+        f.pendingSubFarmers.push(farmerMap.get(subAddr))
+      })
+    }
+  }
   return farmerMap
 }
 
@@ -200,21 +225,21 @@ function getSortedFarmer(farmerMap, relation) {
   const newFarmers = []
   for(let f of farmerMap.values()) {
     // if has big brother, just skip
-    if(relation.hasMain(f.address)) {
+    if(relation.getMain(f.address)) {
       continue
     }
     // if has followers
-    const subs = relation.getSub(f.address)
+    const subs = f.subFarmers // TODO: f has subaccounts
     if(subs && subs.length > 0) {
-      subs.forEach((subAddr) => {
-        subFarmer = farmerMap.get(subAddr)
+      subs.forEach((sub) => {
+        subFarmer = farmerMap.get(sub.address)
         if(subFarmer) {
           f.stake += subFarmer.stake
           f.heft += subFarmer.heft
           f.data_size += subFarmer.data_size
           f.sentinel += subFarmer.sentinel
         } else {
-          console.error(`${f.address}'s subfarmer not found: ${subAddr}`)
+          console.error(`${f.address}'s subfarmer not found: ${sub.address}`)
         }
       })
     }
@@ -237,6 +262,7 @@ async function getCurrentTopFarmers() {
   const farmerMap = await fetchAllFarmers(r, rPending)
   gCacheDB.allFarmers = farmerMap
   const orderedFarmer = getSortedFarmer(farmerMap, r)
+  // TODO: ordered farmer by pending
   gCacheDB.topN = orderedFarmer
 }
 
