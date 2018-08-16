@@ -269,9 +269,9 @@ async function getCurrentTopFarmers() {
   const r = await getCurrentRelation()
   const farmerMap = await fetchAllFarmers(r, rPending)
   gCacheDB.allFarmers = farmerMap
-  const orderedFarmer = getSortedFarmer(farmerMap, r)
+  // const orderedFarmer = getSortedFarmer(farmerMap, r)
   // TODO: ordered farmer by pending
-  gCacheDB.topN = orderedFarmer
+  // gCacheDB.topN = orderedFarmer
 }
 
 async function syncOn () {
