@@ -41,6 +41,8 @@
         <div class="sub-farmer" :class="f.address === searchResult ? 'highlight' : ''" :id="'c' + f.address" v-for="f in row.subFarmers" :key="f.address">
           <!-- <div class="nickName">{{nickName(f)}}</div> -->
           <div class="address">{{f.address}}</div>
+          <div class="stake">{{f.stake | formatNumber}} GNX</div>
+          <div class="spaceShared">{{f.data_size | formatSize}}</div>
           <div class="heft">{{f.sentinel * 10000 | formatNumber}}</div>
         </div>
       </div>
