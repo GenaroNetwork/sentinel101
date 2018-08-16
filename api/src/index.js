@@ -19,22 +19,6 @@ const config = {
   }
 }
 
-// Add the route
-server.route({
-  method: 'GET',
-  path: '/top-farmer/{all?}',
-  config,
-  handler: function (request, h) {
-    const all = 'all' === request.params.all
-    const topn = topFarmer.getTopN()
-    if(all) {
-      return topn
-    } else {
-      return topn.filter(f => f.sentinel !== 0)
-    }
-  }
-})
-
 server.route({
   method: 'GET',
   path: '/farmers',

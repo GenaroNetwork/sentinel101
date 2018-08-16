@@ -1,5 +1,4 @@
 import * as axios from 'axios'
-import { isAddress } from 'web3-utils'
 
 const fetchUrl = "http://118.31.61.119:8000/farmers"
 // const registerUrl = "http://118.31.61.119:8000/register-farmer"
