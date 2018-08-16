@@ -200,6 +200,14 @@ async function fetchAllFarmers(relation, pendingRelation) {
   for (let f of farmerMap.values()) {
     const subs = relation.getSub(f.address)
     const pSubs = pendingRelation.getSub(f.address)
+    const main = relation.getMain(f.address)
+    const pMain = pendingRelation.getMain(f.address)
+    if(main) {
+      f.mainFarmer = main
+    }
+    if(pMain) {
+      f.pendingMainFarmer = pMain
+    }
     if(subs && subs.length > 0) {
       if(!f.subFarmers) {
         f.subFarmers = []
@@ -304,10 +312,15 @@ function getFarmer(addr) {
   return null
 }
 
+function getAllFarmers() {
+  return Array.from(gCacheDB.allFarmers.values())
+}
+
 module.exports = {
   getTopN,
   syncOn,
   getFarmerOutline,
   getTotalStake,
   getFarmer,
+  getAllFarmers
 }

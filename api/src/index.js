@@ -37,6 +37,15 @@ server.route({
 
 server.route({
   method: 'GET',
+  path: '/farmers',
+  config,
+  handler: function (request, h) {
+    return topFarmer.getAllFarmers()
+  }
+})
+
+server.route({
+  method: 'GET',
   path: '/farmer-outline',
   config,
   handler: async function (request, h) {
