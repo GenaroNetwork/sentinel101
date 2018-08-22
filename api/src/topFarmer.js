@@ -53,6 +53,7 @@ async function getCurrentCommitteeAccountBinding() {
 async function getPendingRelation() {
   const web3 = getWeb3()
   const candis = await web3.genaro.getCandidates('latest')
+  const freeMan = []
   const subToMain = new Map()
   const mainToSub = new Map()
   if(Array.isArray(candis)) {
@@ -66,6 +67,8 @@ async function getPendingRelation() {
         thesubs.forEach(sub => {
           subToMain.set(sub, mainAddr)
         })
+      } else {
+        freeMan.push(mainAddr)
       }
     }
   }
@@ -73,7 +76,7 @@ async function getPendingRelation() {
   function getAll() {
     const mains = Array.from(mainToSub.keys())
     const subs = Array.from(subToMain.keys())
-    return mains.concat(subs)
+    return mains.concat(subs).concat(freeMan)
   }
   
   function getSub(addr) {
@@ -225,6 +228,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
       })
     }
   }
+  // 8. remove subs
   return farmerMap
 }
 
