@@ -93,7 +93,7 @@ export default {
       searchResult: null
     }
   },
-  methods: {
+  computed: {
       formatGNX(row) {
         if(row.stake) {
           return (row.stake) + ' GNX'
@@ -117,6 +117,8 @@ export default {
       formatAddr(row) {
         return row.address
       },
+  },
+  methods: {
       toggleShowInfo(row) {
         if(row.showExtra) {
             this.$set(row, 'showExtra', false)
