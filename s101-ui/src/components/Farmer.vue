@@ -15,7 +15,7 @@
     <div class="stake">GNX Stake 量</div>
     <div class="spaceShared">空间使用量</div>
     <div class="member">成员</div>
-    <div class="heft">Sentinel</div>
+    <div class="sentinel">Sentinel</div>
     <div class="info"></div>
   </div>
   <div class="table-row flex-wrap" :class="row.address === searchResult ? 'highlight' : ''" :id="'c' + row.address" v-for="row in showData" :key="row.address">
@@ -26,7 +26,7 @@
       <div class="stake">{{row.stake | formatNumber}} GNX</div>
       <div class="spaceShared">{{row.data_size | formatSize}}</div>
       <div class="member"><a @click.stop.prevent="toggleShowInfo(row)">{{row.subFarmers && row.subFarmers.length > 0 ? row.subFarmers.length + '/10' : ''}}</a></div>
-      <div class="heft">{{row.sentinel * 10000 | formatNumber}}</div>
+      <div class="sentinel">{{row.sentinel * 10000 | formatNumber}}</div>
       <div class="info" @click.stop.prevent="toggleShowInfo(row)">
         <i v-if="!row.showExtra" class="el-icon-arrow-down"></i>
         <i v-if="row.showExtra" class="el-icon-arrow-up"></i>
@@ -43,7 +43,7 @@
           <div class="address">{{f.address}}</div>
           <div class="stake">{{f.stake | formatNumber}} GNX</div>
           <div class="spaceShared">{{f.data_size | formatSize}}</div>
-          <div class="heft">{{f.sentinel * 10000 | formatNumber}}</div>
+          <div class="sentinel">{{f.sentinel * 10000 | formatNumber}}</div>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@ export default {
   cursor: pointer;
   text-decoration:underline;
 }
-.heft {
+.sentinel {
   width: 120px;
   flex-shrink: 0;
   text-align: right;
@@ -342,7 +342,7 @@ export default {
     width: 80px;
     flex-shrink: 0;
   }
-  .heft {
+  .sentinel {
     width: 60px;
     flex-shrink: 0;
   }
