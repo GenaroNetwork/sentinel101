@@ -2,15 +2,15 @@
   <div class="wrapper">
     <div class="stat">
       <span class="value">{{totalStake | formatNumber}}<span class="unit">GNX</span></span>
-      <span class="desc">STAKE 总量</span>
+      <span class="desc">{{ $t("statistics.total_stake") }}</span>
     </div>
     <div class="stat">
       <span class="value">{{spaceHuman.num}}<span class="unit">{{spaceHuman.unit}}</span></span>
-      <span class="desc">共享空间</span>
+      <span class="desc">{{ $t("statistics.shared_space") }}</span>
     </div>
     <div class="stat">
-      <span class="value">{{totalHeft | formatNumber}}<span class="unit">个</span></span>
-      <span class="desc">SENTINEL 总量</span>
+      <span class="value">{{totalHeft | formatNumber}}<span class="unit"></span></span>
+      <span class="desc">{{ $t("statistics.total_sentinel") }}</span>
     </div>
   </div>
 </template>

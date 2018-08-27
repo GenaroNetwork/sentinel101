@@ -2,20 +2,20 @@
 <div class="tb-wrap">
   <el-form class="form" :inline="true" :model="formInline" ref="ruleForm" :rules="rules">
     <el-form-item label="" prop="address">
-      <el-input clearable v-model="formInline.address" placeholder="请输入钱包地址"></el-input>
+      <el-input clearable v-model="formInline.address" :placeholder="$t('message.please_input_wallet_address')"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">搜索</el-button>
+      <el-button type="primary" @click="onSubmit">{{ $t("farmer.search")}}</el-button>
     </el-form-item>
   </el-form>
   <div class="table-header flex-wrap">
-    <div class="order">排名</div>
+    <div class="order">{{ $t("farmer.order") }}</div>
     <!-- <div class="nickName">昵称</div> -->
-    <div class="address">地址</div>
-    <div class="stake">GNX Stake 量</div>
-    <div class="spaceShared">空间使用量</div>
-    <div class="member">成员</div>
-    <div class="sentinel">Sentinel</div>
+    <div class="address">{{ $t("farmer.address") }}</div>
+    <div class="stake">{{ $t("farmer.stake") }}</div>
+    <div class="spaceShared">{{ $t("farmer.space_shared") }}</div>
+    <div class="member">{{ $t("farmer.member") }}</div>
+    <div class="sentinel">{{ $t("farmer.sentinel") }}</div>
     <div class="info"></div>
   </div>
   <div class="table-row flex-wrap" :class="row.address === searchResult ? 'highlight' : ''" :id="'c' + row.address" v-for="row in showData" :key="row.address">
@@ -34,8 +34,8 @@
     </div>
     <div class="row-down" v-if="row.showExtra">
       <div class="extra1">
-        <div class="extra-row"><span class="leftc">GNX Stake 量：</span> <span class="rightc">{{row.stake | formatNumber}} GNX</span></div>
-        <div class="extra-row"><span class="leftc">空间使用量：</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
+        <div class="extra-row"><span class="leftc">{{ $t("farmer.stake")}}：</span> <span class="rightc">{{row.stake | formatNumber}} GNX</span></div>
+        <div class="extra-row"><span class="leftc">{{ $t("farmer.spaceShared") }}：</span> <span class="rightc">{{row.data_size | formatSize}}</span></div>
       </div>
       <div>
         <div class="sub-farmer" :class="f.address === searchResult ? 'highlight' : ''" :id="'c' + f.address" v-for="f in row.subFarmers" :key="f.address">
@@ -80,10 +80,11 @@ export default {
       },
       rules: {
         address: [
-          { required: true, message: '请输入钱包地址', trigger: 'blur' },
+          { required: true, message: this.$i18n.t('message.please_input_wallet_address'), trigger: 'blur' },
           { validator: (rule, value, callback) => {
             if (!isAddress(value)) {
-              callback(new Error("这不是正确的钱包地址"));
+              const error_text = this.$i18n.t('error_message.not_right_address');
+              callback(new Error(error_text));
             } else {
               callback();
             }

@@ -5,7 +5,7 @@
       <el-input clearable v-model="formInline.address" placeholder="请输入钱包地址"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">搜索</el-button>
+      <el-button type="primary" @click="onSubmit">{{ $t("framer.search") }}</el-button>
     </el-form-item>
   </el-form>
   <el-dialog

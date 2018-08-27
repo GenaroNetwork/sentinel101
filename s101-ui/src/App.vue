@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="font-hei">
-    <h1>Genaro Sharer 排行</h1>
+    <Locale />
+    <h1>{{ $t("app.rank") }}</h1>
     <!-- <Join /> -->
     <Statistics />
     <!-- <Search /> -->
@@ -9,6 +10,7 @@
 </template>
 
 <script>
+import Locale from './components/Locale.vue';
 import Statistics from './components/Statistics.vue'
 import Farmer from './components/Farmer.vue'
 
@@ -16,7 +18,8 @@ export default {
   name: 'app',
   components: {
     Statistics,
-    Farmer
+    Farmer,
+    Locale
   }
 }
 </script>
