@@ -317,7 +317,7 @@ function getFarmer(addr) {
 }
 
 function getAllFarmers() {
-  return Array.from(gCacheDB.allFarmers.values())
+  return Array.from(gCacheDB.allFarmers.values()).filter(f => f.stake > 0)
 }
 
 module.exports = {
