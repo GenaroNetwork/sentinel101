@@ -11,6 +11,7 @@ let gCacheDB = {
   totalStake:0,
   totalHeft:0,
   totalDataSize:0,
+  totalSentinel: 0,
   allFarmers:null,
   topN:[],
 }
@@ -143,6 +144,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
   let totalStake = 0
   let totalHeft = 0
   let totalDataSize = 0
+  let totalSentinel = 0
   // 1. read all farmers from db
   let farmers = (await axios.get(config.allFarmers)).data
   if(!farmers || !Array.isArray(farmers)) return null
@@ -198,7 +200,9 @@ async function fetchAllFarmers(relation, pendingRelation) {
     } else {
       f.sentinel = f.stake / totalStake + f.heft / totalHeft // total value shouldn't be zero
     }
+    totalSentinel += f.sentinel
   }
+  gCacheDB.totalSentinel = totalSentinel
   // 7. add subs to main
   for (let f of farmerMap.values()) {
     const subs = relation.getSub(f.address)
@@ -301,7 +305,8 @@ async function getFarmerOutline() {
     return {
       totalHeft: gCacheDB.totalHeft,
       totalDataSize: gCacheDB.totalDataSize,
-      totalStake: gCacheDB.totalStake
+      totalStake: gCacheDB.totalStake,
+      totalSentinel: gCacheDB.totalSentinel
     }
 }
 
