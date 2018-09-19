@@ -9,7 +9,7 @@
       <span class="desc">{{ $t("statistics.shared_space") }}</span>
     </div>
     <div class="stat">
-      <span class="value">{{totalHeft | formatNumber}}<span class="unit"></span></span>
+      <span class="value">{{totalSentinel * 10000 | formatNumber}}<span class="unit"></span></span>
       <span class="desc">{{ $t("statistics.total_sentinel") }}</span>
     </div>
   </div>
@@ -57,6 +57,7 @@ export default {
       this.totalStake = ol.totalStake
       this.totalHeft = ol.totalHeft
       this.totalDataSize = ol.totalDataSize
+      this.totalSentinel = ol.totalSentinel * 1000
     }
   },
   async created() {
