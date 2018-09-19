@@ -27,6 +27,7 @@ export default {
       totalStake: 0,
       totalHeft: 0,
       totalDataSize: 0,
+      totalSentinel: 0,
     }
   },
   computed: {
@@ -57,7 +58,7 @@ export default {
       this.totalStake = ol.totalStake
       this.totalHeft = ol.totalHeft
       this.totalDataSize = ol.totalDataSize
-      this.totalSentinel = ol.totalSentinel * 1000
+      this.totalSentinel = ol.totalSentinel
     }
   },
   async created() {
