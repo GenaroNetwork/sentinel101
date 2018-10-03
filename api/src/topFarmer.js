@@ -151,6 +151,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
   // 2. prepare farmer data map
   let farmerMap = new Map()
   farmers.reduce((fmap, f) => {
+    f.heft = Math.round(f.heft)
     fmap.set(f.address, f)
     totalHeft += f.heft
     if(f.data_size) {
@@ -198,7 +199,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
     if(f.heft === 0) {
       f.sentinel = 0
     } else {
-      f.sentinel = f.stake / totalStake + f.heft / totalHeft // total value shouldn't be zero
+      f.sentinel = Math.round(f.stake / totalStake + f.heft / totalHeft) // total value shouldn't be zero
     }
     totalSentinel += f.sentinel
   }
