@@ -151,6 +151,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
   // 2. prepare farmer data map
   let farmerMap = new Map()
   farmers.reduce((fmap, f) => {
+    delete f['nodes']
     f.heft = Math.round(f.heft)
     fmap.set(f.address, f)
     totalHeft += f.heft
