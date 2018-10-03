@@ -200,7 +200,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
     if(f.heft === 0) {
       f.sentinel = 0
     } else {
-      f.sentinel = Math.round(f.stake / totalStake + f.heft / totalHeft) // total value shouldn't be zero
+      f.sentinel = (f.stake / totalStake + f.heft / totalHeft) // total value shouldn't be zero
     }
     totalSentinel += f.sentinel
   }
