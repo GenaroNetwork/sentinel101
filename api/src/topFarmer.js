@@ -148,6 +148,10 @@ async function fetchAllFarmers(relation, pendingRelation) {
   // 1. read all farmers from db
   let farmers = (await axios.get(config.allFarmers)).data
   if(!farmers || !Array.isArray(farmers)) return null
+  farmers = farmers.map(farmer => {
+    farmer.address = farmer.address.toLowerCase()
+    return farmer
+  })
   // 2. prepare farmer data map
   let farmerMap = new Map()
   farmers.reduce((fmap, f) => {
@@ -170,6 +174,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
       })
     }
   })
+
   // 4. merge subs. some sub farmer not exist in candidates nor in bridge DB because no share
   const currentAll = relation.getAll()
   currentAll.forEach(can => {
@@ -180,6 +185,7 @@ async function fetchAllFarmers(relation, pendingRelation) {
       })
     }
   })
+
   // 5. set all stakes
   for (let f of farmerMap.values()) {
     f.stake = await getFarmerStake(f.address)
