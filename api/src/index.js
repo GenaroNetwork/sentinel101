@@ -5,11 +5,13 @@ const topFarmer = require('./topFarmer')
 const nickNameManager = require('./nickName')
 const Boom = require('boom')
 const { isAddress } = require('web3-utils')
+const SITE_CONFIG = require('../config.json')
+
 
 // Create a server with a host and port
 const server = Hapi.server({
   host: '0.0.0.0',
-  port: 8000
+  port: SITE_CONFIG.PORT
 })
 
 const config = {

@@ -1,5 +1,6 @@
 {
     "allFarmers": "http://118.31.61.119:8080/farmers",
     "fetchInterval": 20000,
-    "BLOCK_COUNT_OF_ROUND": 43200
+    "BLOCK_COUNT_OF_ROUND": 43200,
+    "PORT": 8000
 }
